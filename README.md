@@ -1,5 +1,4 @@
-# Anomaly Detection with Conditioned Denoising Diffusion Models.
-
+# A Diffusion-based Framework with Transformer Blocks for Anomaly Detection
 Official implementation of DTAD
 
 ## Requirements
@@ -17,8 +16,6 @@ pip install -U --pre triton
 ```
 
 ## Train and Evaluation of the Model
-You can download the model checkpoints directly from [Checkpoints](https://drive.google.com/drive/u/0/folders/1FF83llo3a-mN5pJN8-_mw0hL5eZqe9fC) 
-
 To train the denoising UNet, run:
 
 ```train
