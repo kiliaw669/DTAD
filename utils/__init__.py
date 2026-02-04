@@ -6,5 +6,5 @@ from .feature_extractor import *
 from .reconstruction import *
 from .loss import *
 from .resnet import *
-from .ddad import *
+from .dtad import *
 from .sde import *

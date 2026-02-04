@@ -4,17 +4,16 @@ import os
 import argparse
 from omegaconf import OmegaConf
 from train import trainer
-# from feature_extractor import * 
-# from ddad import *
 from utils import *
 from libs.unet import *
 os.environ['CUDA_VISIBLE_DEVICES'] = "0,1,2"
 
 def build_model(config):
-    if config.model.DDADS:
+    if config.model.DTADS:
         unet = UNetModel(config.data.image_size, 32, dropout=0.3, n_heads=2 ,in_channels=config.data.input_channel)
     else:
         unet = UNetModel(config.data.image_size, 64, dropout=0.0, n_heads=4 ,in_channels=config.data.input_channel)
+    print(unet)
     return unet
 
 def train(config):
@@ -39,8 +38,8 @@ def detection(config):
     unet.to(config.model.device)
     checkpoint = torch.load(os.path.join(os.getcwd(), config.model.checkpoint_dir, config.data.category, str(config.model.load_chp)))
     unet.eval()
-    ddad = DDAD(unet, config)
-    ddad()
+    dtad = DTAD(unet, config)
+    dtad()
     
 def finetuning(config):
     unet = build_model(config)
@@ -56,7 +55,7 @@ def finetuning(config):
 
 
 def parse_args():
-    cmdline_parser = argparse.ArgumentParser('DDAD')    
+    cmdline_parser = argparse.ArgumentParser('DTAD')    
     cmdline_parser.add_argument('-cfg', '--config', 
                                 default= os.path.join(os.path.dirname(os.path.abspath(__file__)),'config.yaml'), 
                                 help='config file')

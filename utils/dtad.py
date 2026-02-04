@@ -10,7 +10,7 @@ from .reconstruction import *
 from libs.unet import *
 os.environ['CUDA_VISIBLE_DEVICES'] = "0,1,2"
 
-class DDAD:
+class DTAD:
     def __init__(self, unet, config) -> None:
         self.test_dataset = Dataset_maker(
             root= config.data.data_dir,
@@ -54,7 +54,6 @@ class DDAD:
 
                 forward_list.append(input)
                 anomaly_map_list.append(anomaly_map)
-
 
                 gt_list.append(gt)
                 reconstructed_list.append(x0)

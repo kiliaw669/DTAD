@@ -32,7 +32,7 @@ def trainer(model, category, config):
         os.mkdir(config.model.checkpoint_dir)
 
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    pretrained_path = '/oss-mt-sysu-release/wangzh/data/autoencoder/autoencoder_kl.pth'
+    pretrained_path = config.autoencoder.pretrained_path
     autoencoder = libs.autoencoder.get_model(pretrained_path=pretrained_path)
     autoencoder.to(device)
 

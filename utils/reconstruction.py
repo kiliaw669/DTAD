@@ -18,8 +18,6 @@ class Reconstruction:
         self.unet = unet
         self.config = config
 
-    
-    
     def __call__(self, x, y0, w) -> Any:
         def _compute_alpha(t):
             betas = np.linspace(self.config.model.beta_start, self.config.model.beta_end, self.config.model.trajectory_steps, dtype=np.float64)
@@ -34,22 +32,21 @@ class Reconstruction:
         xt = at.sqrt() * x + (1- at).sqrt() * torch.randn_like(x).to(self.config.model.device)
         seq = range(0 , self.config.model.test_trajectoy_steps, self.config.model.skip)
 
-
         with torch.no_grad():
             n = x.size(0)
             seq_next = [-1] + list(seq[:-1])
             xs = [xt]
             for index, (i, j) in enumerate(zip(reversed(seq), reversed(seq_next))):
-                t = (torch.ones(n) * i).to(self.config.model.device)
-                next_t = (torch.ones(n) * j).to(self.config.model.device)
+                t = (torch.ones(n) * i).to(self.config.model.device) # timestep t
+                next_t = (torch.ones(n) * j).to(self.config.model.device) # timestep t+1
                 at = _compute_alpha(t.long())
                 at_next = _compute_alpha(next_t.long())
                 xt = xs[-1].to(self.config.model.device)
                 self.unet = self.unet.to(self.config.model.device)
-                et = self.unet(xt, t)
+                et = self.unet(xt, t) # epsilon_{t}
                 yt = at.sqrt() * y0 + (1- at).sqrt() *  et
-                et_hat = et - (1 - at).sqrt() * w * (yt-xt)
-                x0_t = (xt - et_hat * (1 - at).sqrt()) / at.sqrt()
+                et_hat = et - (1 - at).sqrt() * w * (yt-xt) 
+                x0_t = (xt - et_hat * (1 - at).sqrt()) / at.sqrt() # x_{t} -> x_{0} with epsilon_{t}_hat
                 c1 = (
                     self.config.model.eta * ((1 - at / at_next) * (1 - at_next) / (1 - at)).sqrt()
                 )

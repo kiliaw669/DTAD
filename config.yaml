@@ -4,14 +4,14 @@ data :
   category: screw  # ['carpet', 'bottle', 'hazelnut', 'leather', 'cable', 'capsule', 'grid', 'pill', 'transistor', 'metal_nut', 'screw','toothbrush', 'zipper', 'tile', 'wood']    
                    # ['candle', 'capsules', 'cashew', 'chewinggum', 'fryum', 'macaroni1', 'macaroni2', 'pcb1', 'pcb2' ,'pcb3', 'pcb4', 'pipe_fryum']
   image_size: 256 # dataset will resize to thise size.
-  batch_size: 32 # 32 for DDAD and 16 for DDADS
+  batch_size: 32 # 32 for DTAD and 16 for DTADS
   DA_batch_size: 16 #16 for MVTec and [macaroni2, pcb1] in VisA, and 32 for other categories in VisA
   test_batch_size: 16 #16 for MVTec, 32 for VisA
   mask : True 
   input_channel : 4 # 4 for latent space, while 3 for pixel space model
 
 model:
-  DDADS: False
+  DTADS: False
   checkpoint_dir: checkpoints/MVTec   #MTD  #MVTec  #VisA
   checkpoint_name: weights
   exp_name: default
@@ -25,9 +25,9 @@ model:
   v : 1 #7 # 1 for MVTec and cashew in VisA, and 7 for VisA (1.5 for cashew). Control parameter for pixel-wise and feature-wise comparison. v * D_p + D_f
   w : 2 # Conditionig parameter. The higher the value, the more the model is conditioned on the target image. "Fine tuninig this parameter results in better performance".
   w_DA : 3 #3 # Conditionig parameter for domain adaptation. The higher the value, the more the model is conditioned on the target image.
-  DLlambda : 0.1 # 0.1 for MVTec and 0.01 for VisA
-  trajectory_steps: 1000
-  test_trajectoy_steps: 250   # Starting point for denoining trajectory.
+  DLlambda : 0.1 # Lambda hparam , 0.1 for MVTec and 0.01 for VisA
+  trajectory_steps: 1000 # Number of steps in the denoising trajectory during training.
+  test_trajectoy_steps: 250   # Starting point for denoining trajectory during inference.
   test_trajectoy_steps_DA: 250  # Starting point for denoining trajectory for domain adaptation.
   skip : 25   # Number of steps to skip for denoising trajectory.
   skip_DA : 25
@@ -39,10 +39,11 @@ model:
   num_workers : 2
   seed : 42
 
-
-
 metrics:
   auroc: True
   pro: True
   misclassifications: False
   visualisation: True
+
+autoencoder:
+  pretrained_path: '/oss-mt-sysu-release/wangzh/data/autoencoder/autoencoder_kl.pth'
